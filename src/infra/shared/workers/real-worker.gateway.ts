@@ -21,11 +21,11 @@ import { TransactionDomainService } from '@/domain/application/transaction/trans
  * - Error Handling: Captura e registra erros
  */
 @Injectable()
-export class RealWorkerGateway extends WorkerGateway {
+export class RealWorkerGateway implements WorkerGateway {
   private readonly logger = new Logger(RealWorkerGateway.name);
 
   constructor(private readonly transactionDomainService: TransactionDomainService) {
-    super();
+    // super();
   }
 
   async process(task: WorkerTask): Promise<WorkerResult> {

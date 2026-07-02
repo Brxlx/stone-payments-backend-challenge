@@ -127,7 +127,7 @@ describe('RealWorkerGateway', () => {
 
     const brokenTransactionDomainService = new TransactionDomainService(
       new MakeTransactionUseCase(null as unknown as TransactionsRepository, fakeAuthorizer),
-      null as unknown as any,
+      null as unknown as WorkerPool,
       fakeAuthorizer,
       null as unknown as TransactionsRepository,
     );

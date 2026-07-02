@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { WorkerPool } from '@/infra/shared/workers/worker-pool';
 import { FakeWorkerGateway } from 'test/gateways/workers/fake-worker.gateway';
 import { makeTransaction } from 'test/factories/make-transaction';
+import { CoreEnv } from '@/domain/application/shared/env/env';
+import { Env } from '../env/env.schema';
 
 /**
  * Testes para o WorkerPool
@@ -21,12 +23,11 @@ describe('WorkerPool', () => {
     const mockEnvService = {
       get: (key: string) => {
         if (key === 'WORKER_COUNT') return 2; // 2 workers para testes
-        return undefined;
+        return;
       },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    workerPool = new WorkerPool(fakeWorkerGateway, mockEnvService as any);
+    workerPool = new WorkerPool(fakeWorkerGateway, mockEnvService as CoreEnv<Env>);
   });
 
   it('should create worker pool with correct number of workers', () => {

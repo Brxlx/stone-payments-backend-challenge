@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { WorkerPool } from './worker-pool';
 import { RealWorkerGateway } from './real-worker.gateway';
 import {
@@ -14,7 +14,7 @@ import { TransactionModule } from '@/infra/modules/Transaction/transaction.modul
  * Integra o RealWorkerGateway para processamento de transações
  */
 @Module({
-  imports: [EnvModule, TransactionModule],
+  imports: [EnvModule, forwardRef(() => TransactionModule)],
   providers: [
     {
       provide: WorkerGateway,

@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TransactionDomainService } from '../../../domain/application/transaction/transaction.domain-service';
 import { MakeTransactionUseCase } from '../../../domain/application/transaction/use-cases/make-transaction-use-case';
-import { InMemoryTransactionsRepository } from 'test/repositories/in-memory-transactions.repository';
-import { TransactionsRepository } from '../../../domain/application/transaction/repositories/transactions.repository';
-import { FakeAuthorizer } from 'test/gateways/authorizer/fake-authorizer';
+import { FakeAuthorizer } from '@/infra/shared/gateways/fake-authorizer';
 import { Authorizer } from '../../../domain/application/shared/gateways/authorizer.gateway';
 import { TransactionsController } from './transactions.controller';
+import { DatabaseModule } from '@/infra/shared/database/database.module';
+import { WorkerModule } from '@/infra/shared/workers/worker.module';
 
 /**
  * TransactionModule - Módulo de aplicação para transações
@@ -13,19 +13,16 @@ import { TransactionsController } from './transactions.controller';
  * Integra com workers para processamento concorrente
  */
 @Module({
+  imports: [DatabaseModule.forRoot({ implementation: 'drizzle' }), forwardRef(() => WorkerModule)],
   providers: [
     TransactionDomainService,
     MakeTransactionUseCase,
-    {
-      provide: TransactionsRepository,
-      useClass: InMemoryTransactionsRepository,
-    },
     {
       provide: Authorizer,
       useClass: FakeAuthorizer,
     },
   ],
   controllers: [TransactionsController],
-  exports: [TransactionDomainService, MakeTransactionUseCase, TransactionsRepository, Authorizer],
+  exports: [TransactionDomainService, MakeTransactionUseCase, Authorizer],
 })
 export class TransactionModule {}

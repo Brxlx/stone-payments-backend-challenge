@@ -5,9 +5,9 @@ import {
   WorkerTask,
   WorkerResult,
 } from '@/domain/application/shared/gateways/worker.gateway';
-import { CoreEnv } from '@/domain/application/shared/env/env';
-import { Env } from '../env/env.schema';
+
 import { prefixedLogger } from '@/infra/helpers/prefixed-logger';
+import { EnvService } from '../env/env.service';
 
 /**
  * WorkerPool - Orquestrador de workers concorrentes
@@ -31,11 +31,12 @@ export class WorkerPool implements WorkerPoolContract, OnModuleInit, OnModuleDes
 
   constructor(
     private readonly workerGateway: WorkerGateway,
-    private readonly envService: CoreEnv<Env>,
+    private readonly envService: EnvService,
   ) {
     const workerCount = this.envService.get('WORKER_COUNT');
     this.maxWorkers = workerCount ?? 4;
     this.logger.debug(`WorkerPool initialized with ${this.maxWorkers} workers`);
+    this.logger.log(workerCount);
   }
 
   /**
